@@ -71,9 +71,11 @@ function StepCard({ step, emphasize = false }) {
       style={{
         listStyle: 'none',
         background: s.bg,
-        borderLeft: `4px solid ${s.bar}`,
-        border: `1px solid ${theme.color.line}`,
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: theme.color.line,
         borderLeftWidth: 4,
+        borderLeftColor: s.bar,
         borderRadius: theme.radius.md,
         padding: '12px 14px',
         boxShadow: emphasize ? theme.shadow : 'none',
