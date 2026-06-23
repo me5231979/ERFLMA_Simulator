@@ -24,6 +24,16 @@ export default function App() {
   return (
     <div style={{ maxWidth: theme.maxWidth, margin: '0 auto', padding: '24px 18px 64px' }}>
       <header style={{ marginBottom: 18 }}>
+        {/* Vanderbilt gold accent bar */}
+        <div
+          style={{
+            height: 5,
+            width: 72,
+            borderRadius: 3,
+            background: theme.color.goldGradient,
+            marginBottom: 12,
+          }}
+        />
         <h1 style={{ margin: '0 0 4px', fontSize: 24, color: theme.color.brandInk }}>
           FLH ER &amp; Discipline Simulator
         </h1>
@@ -59,11 +69,11 @@ export default function App() {
             onClick={() => setSubmitted(true)}
             style={{
               background: theme.color.brand,
-              color: '#fff',
-              border: 'none',
+              color: theme.color.ink,
+              border: `1px solid ${theme.color.brandDeep}`,
               borderRadius: theme.radius.sm,
               padding: '10px 18px',
-              fontWeight: 600,
+              fontWeight: 700,
             }}
           >
             Get plan
