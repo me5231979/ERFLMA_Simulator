@@ -88,9 +88,9 @@ export default function App() {
         {stage === 'screen' && (
           <Card>
             <h2 style={s.h2}>Safety & legal screen</h2>
-            <p style={s.body}>These take priority over discipline. Tap anything that may be present, even slightly — over-routing to a person is the safe error.</p>
+            <p style={s.body}>Check any that may apply — even slightly. <strong>If none of them fit, that's fine</strong> — you'll go straight to classifying. These checks just take priority over discipline, so over-routing to a person is the safe error.</p>
             <div style={s.selectHint}>
-              <span style={s.selectHintTxt}>Select all that apply · you can choose more than one</span>
+              <span style={s.selectHintTxt}>Optional · select all that apply, or none</span>
               {triggered.length > 0 && <span style={s.selectCount}>{triggered.length} selected</span>}
             </div>
             <div style={s.stopGrid}>
@@ -108,7 +108,9 @@ export default function App() {
                 )
               })}
             </div>
-            {hardStop && <div style={s.alert}><strong style={{ color: STOP }}>Hard stop active.</strong> This routes to a person before any disciplinary action. Continue to see who owns it.</div>}
+            {hardStop
+              ? <div style={s.alert}><strong style={{ color: STOP }}>Hard stop active.</strong> This routes to a person before any disciplinary action. Continue to see who owns it.</div>
+              : <p style={s.screenNote}>Nothing here applies? That's common — just continue and the tool will classify the situation.</p>}
             <Nav back={() => setStage('state')} next={() => { if (hardStop) { setLane('PROTECTED'); setStage('plan') } else setStage('classify') }} nextLbl={hardStop ? 'See routing' : 'No flags — classify'} />
           </Card>
         )}
@@ -341,6 +343,7 @@ const s = {
   stateName: { fontSize: 14, fontWeight: 600 },
   stateFlag: { fontSize: 10.5, color: STOP, fontWeight: 700, marginTop: 2 },
   note: { marginTop: 16, padding: '12px 14px', background: '#FAF6EC', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderLeftWidth: 3, borderLeftStyle: 'solid', borderLeftColor: GOLD, borderRadius: 3, fontSize: 13.5, lineHeight: 1.55, color: '#4A463E' },
+  screenNote: { marginTop: 16, fontSize: 13, lineHeight: 1.55, color: '#6E685D', fontStyle: 'italic' },
   selectHint: { display: 'flex', alignItems: 'center', gap: 10, margin: '0 0 2px' },
   selectHintTxt: { fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: GOLD, fontWeight: 700 },
   selectCount: { fontSize: 11, fontWeight: 700, color: STOP, background: '#FCF6F5', borderWidth: 1, borderStyle: 'solid', borderColor: STOP, borderRadius: 999, padding: '2px 9px' },
