@@ -30,7 +30,7 @@ export default function App() {
 
   return (
     <div style={s.page}>
-      <style>{`*{box-sizing:border-box}button{font-family:inherit;cursor:pointer;transition:all .15s}button:disabled{cursor:not-allowed}button:focus-visible,a:focus-visible{outline:2px solid ${GOLD};outline-offset:2px}a:hover{border-color:${GOLD}!important;background:#FAF6EC!important}@media(max-width:640px){.frm{padding:24px 16px 64px!important}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}`}</style>
+      <style>{`*{box-sizing:border-box}button{font-family:inherit;cursor:pointer;transition:all .15s}button:disabled{cursor:not-allowed}button:focus-visible,a:focus-visible{outline:2px solid ${GOLD};outline-offset:2px}a:hover{border-color:${GOLD}!important;background:#FAF6EC!important}.opt:hover{border-color:${STOP}!important;background:#FCF6F5!important}@media(max-width:640px){.frm{padding:24px 16px 64px!important}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}`}</style>
       <div style={s.frame} className="frm">
         <header style={{ marginBottom: 26 }}>
           <img src={vanderbiltLogo} alt="Vanderbilt University" style={s.logo} />
@@ -88,12 +88,16 @@ export default function App() {
         {stage === 'screen' && (
           <Card>
             <h2 style={s.h2}>Safety & legal screen</h2>
-            <p style={s.body}>Check anything present, even slightly. These take priority over discipline. Over-routing to a person is the safe error.</p>
+            <p style={s.body}>These take priority over discipline. Tap anything that may be present, even slightly — over-routing to a person is the safe error.</p>
+            <div style={s.selectHint}>
+              <span style={s.selectHintTxt}>Select all that apply · you can choose more than one</span>
+              {triggered.length > 0 && <span style={s.selectCount}>{triggered.length} selected</span>}
+            </div>
             <div style={s.stopGrid}>
               {HARD_STOPS.map((h) => {
                 const on = triggered.includes(h.id)
                 return (
-                  <button key={h.id} onClick={() => toggle(h.id)} style={{ ...s.stop, ...(on ? s.stopOn : {}) }}>
+                  <button key={h.id} onClick={() => toggle(h.id)} className="opt" aria-pressed={on} style={{ ...s.stop, ...(on ? s.stopOn : {}) }}>
                     <div style={s.stopTop}>
                       <span style={{ ...s.check, ...(on ? s.checkOn : {}) }}>{on ? '✓' : ''}</span>
                       <span style={s.stopLbl}>{h.label}</span>
@@ -168,6 +172,7 @@ function DeltaBox({ st }) {
 function ProtectedPlan({ triggered, routedRoles: routed, role }) {
   const legalHeavy = isLegalHeavy(triggered)
   const danger = isDanger(triggered)
+  const accommodation = triggered.some((t) => ['disability_accommodation', 'leave_interference'].includes(t))
   return (
     <>
       <div style={s.banner}>Stop — route before acting</div>
@@ -186,6 +191,7 @@ function ProtectedPlan({ triggered, routedRoles: routed, role }) {
         <li style={s.li}>Write down objective facts: dates, what was said, who was present.</li>
         <li style={s.li}>Do not retaliate, isolate, or change the person's conditions while this is open.</li>
         <li style={s.li}>Hand off to the first contact above today.</li>
+        {accommodation && <li style={s.li}>Start the ADA/FMLA interactive process — engage the request, don't deny or discipline around it.</li>}
         {danger && <li style={s.li}>If anyone is in danger or a crime may be in progress, call VUPD first.</li>}
       </ol>
     </>
@@ -243,6 +249,7 @@ function LadderPlan({ lane, entryStep, st }) {
       <ul style={s.ul}>
         <li style={s.li}>Document specific, observable facts — not impressions.</li>
         <li style={s.li}>Check consistency against how others were treated.</li>
+        <li style={s.li}>Exclude FMLA/ADA-protected absences from attendance counts, and run any disability or medical signal through the ADA interactive process before disciplining.</li>
         <li style={s.li}>Re-run the legal screen — a protected signal moves this off the ladder.</li>
         <li style={s.li}>Loop your Engagement Consultant before written steps.</li>
       </ul>
@@ -334,11 +341,14 @@ const s = {
   stateName: { fontSize: 14, fontWeight: 600 },
   stateFlag: { fontSize: 10.5, color: STOP, fontWeight: 700, marginTop: 2 },
   note: { marginTop: 16, padding: '12px 14px', background: '#FAF6EC', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderLeftWidth: 3, borderLeftStyle: 'solid', borderLeftColor: GOLD, borderRadius: 3, fontSize: 13.5, lineHeight: 1.55, color: '#4A463E' },
+  selectHint: { display: 'flex', alignItems: 'center', gap: 10, margin: '0 0 2px' },
+  selectHintTxt: { fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: GOLD, fontWeight: 700 },
+  selectCount: { fontSize: 11, fontWeight: 700, color: STOP, background: '#FCF6F5', borderWidth: 1, borderStyle: 'solid', borderColor: STOP, borderRadius: 999, padding: '2px 9px' },
   stopGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10, marginTop: 16 },
   stop: { textAlign: 'left', background: '#fff', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderRadius: 4, padding: 14 },
   stopOn: { borderColor: STOP, background: '#FCF6F5' },
   stopTop: { display: 'flex', alignItems: 'center', gap: 9, marginBottom: 6 },
-  check: { width: 18, height: 18, borderRadius: 3, borderWidth: 1, borderStyle: 'solid', borderColor: LINE, display: 'grid', placeItems: 'center', fontSize: 12, flexShrink: 0 },
+  check: { width: 20, height: 20, borderRadius: 4, borderWidth: 2, borderStyle: 'solid', borderColor: '#9A9486', background: '#fff', display: 'grid', placeItems: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0 },
   checkOn: { background: STOP, borderColor: STOP, color: '#fff' },
   stopLbl: { fontSize: 14, fontWeight: 600, lineHeight: 1.2 },
   stopDesc: { fontSize: 12.5, lineHeight: 1.5, color: '#6E685D', margin: '0 0 8px' },
