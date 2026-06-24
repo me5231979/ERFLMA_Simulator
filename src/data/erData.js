@@ -65,11 +65,11 @@ export const STATES = {
 
 export const RESOURCES = {
   federal: [
-    { org: 'SHRM', title: 'How to Administer a Progressive Discipline Policy', url: 'https://www.shrm.org/topics-tools/tools/how-to-guides/how-to-administer-progressive-discipline-policy', note: 'Step-by-step guide to running a progressive discipline system.' },
-    { org: 'SHRM', title: 'Documentation: The Fine Art of Discipline Write-Ups', url: 'https://www.shrm.org/topics-tools/news/employee-relations/discipline-fine-art-documentation', note: 'What each disciplinary step should document, and how.' },
-    { org: 'SHRM', title: 'When to Skip Progressive Discipline', url: 'https://www.shrm.org/topics-tools/employment-law-compliance/one-done-to-skip-progressive-discipline', note: 'When serious misconduct justifies moving straight to termination.' },
     { org: 'EEOC', title: 'Retaliation & Protected Activity', url: 'https://www.eeoc.gov/retaliation', note: 'What counts as protected activity and unlawful retaliation.' },
-    { org: 'EEOC', title: 'Harassment — Employer Guidance', url: 'https://www.eeoc.gov/harassment', note: 'Landing page. The 2024 enforcement guidance was rescinded Jan 2026; underlying law and Supreme Court precedent still apply.' },
+    { org: 'EEOC', title: 'Harassment — Employer Guidance', url: 'https://www.eeoc.gov/harassment', note: 'Unlawful harassment and the employer’s obligation to act.' },
+    { org: 'EEOC', title: 'Disability Discrimination & the ADA', url: 'https://www.eeoc.gov/disability-discrimination-and-employment-decisions', note: 'Reasonable accommodation and the required interactive process.' },
+    { org: 'EEOC', title: 'Pregnant Workers Fairness Act (PWFA)', url: 'https://www.eeoc.gov/wysk/what-you-should-know-about-pregnant-workers-fairness-act', note: 'Accommodation for pregnancy and related conditions.' },
+    { org: 'NLRB', title: 'Protected Concerted Activity', url: 'https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/employees/concerted-activity', note: 'Pay and working-condition complaints are protected, union or not.' },
     { org: 'U.S. DOL', title: 'FMLA — Wage and Hour Division', url: 'https://www.dol.gov/agencies/whd/fmla', note: 'Authoritative FMLA leave rights and employer obligations.' },
   ],
   TN: [
@@ -77,10 +77,10 @@ export const RESOURCES = {
   ],
   NY: [
     { org: 'NY DOL', title: 'Wages & Hours FAQ', url: 'https://dol.ny.gov/wages-and-hours-frequently-asked-questions', note: 'Final-pay timing, §191 / §198 wage rules.' },
-    { org: 'NY Div. of Human Rights', title: 'Employment Discrimination', url: 'https://dhr.ny.gov/employment', note: 'NYSHRL protected classes and complaint process.' },
+    { org: 'NY Div. of Human Rights', title: 'Employment Discrimination', url: 'https://dhr.ny.gov/', note: 'NYSHRL protected classes and complaint process.' },
   ],
   FL: [
-    { org: 'FL Comm. on Human Relations', title: 'Employment Discrimination (FCRA)', url: 'https://fchr.myflorida.com/', note: 'Florida Civil Rights Act complaints and protected classes.' },
+    { org: 'FL Comm. on Human Relations', title: 'Employment Discrimination (FCRA)', url: 'https://fchr.myflorida.com/employment', note: 'Florida Civil Rights Act complaints and protected classes.' },
     { org: 'U.S. DOL', title: 'Florida Wage & Hour', url: 'https://www.dol.gov/agencies/whd/state/florida', note: 'Florida defers to FLSA for final-pay timing.' },
   ],
   CA: [

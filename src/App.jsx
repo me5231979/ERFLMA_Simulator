@@ -147,9 +147,8 @@ export default function App() {
         {stage === 'plan' && (
           <Card>
             {lane === 'PROTECTED' ? <ProtectedPlan triggered={triggered} routedRoles={routed} role={role} />
-              : lane === 'SERIOUS' ? <SeriousPlan st={st} />
-              : <LadderPlan lane={LANES[lane]} entryStep={entryStep} st={st} />}
-            <CoachingNote pathKey={lane === 'PROTECTED' ? 'protected' : lane === 'SERIOUS' ? 'serious' : 'ladder'} role={role} />
+              : lane === 'SERIOUS' ? <SeriousPlan st={st} role={role} />
+              : <LadderPlan lane={LANES[lane]} entryStep={entryStep} st={st} role={role} />}
             <DeltaBox st={st} />
             <div style={s.disc}>Guidance only, current to June 2026. {st?.name} rule of thumb: {st?.finalPay} Confirm the final step with your Engagement Consultant or ER before acting.</div>
             <Resources st={st} />
@@ -203,6 +202,7 @@ function ProtectedPlan({ triggered, routedRoles: routed, role }) {
       <div style={s.banner}>Stop — route before acting</div>
       <h2 style={s.h2}>Protected / legal-risk situation</h2>
       <p style={s.body}>One or more hard stops fired. Do not issue discipline, promise an outcome, or investigate alone. {role === 'manager' ? 'Your job now is to document facts and hand off.' : 'You have the right to report and to be supported — here is where to go.'}</p>
+      <CoachingNote pathKey="protected" role={role} />
       <h3 style={s.h3}>Why this routed</h3>
       <ul style={s.ul}>{triggered.map((tid) => { const h = HARD_STOPS.find((x) => x.id === tid); return <li key={tid} style={s.li}><strong>{h.label}.</strong> {h.law}</li> })}</ul>
       <h3 style={s.h3}>Route to — in this order</h3>
@@ -223,11 +223,12 @@ function ProtectedPlan({ triggered, routedRoles: routed, role }) {
   )
 }
 
-function SeriousPlan({ st }) {
+function SeriousPlan({ st, role }) {
   return (
     <>
       <h2 style={s.h2}>Serious misconduct path</h2>
       <p style={s.body}>This lane can move faster than the ladder, up to immediate separation, but the decision is shared. You gather and document; your Engagement Consultant and ER approve the outcome.</p>
+      <CoachingNote pathKey="serious" role={role} />
       <h3 style={s.h3}>Sequence</h3>
       <ol style={s.ol}>
         <li style={s.li}>Secure the situation. If there's any safety risk, call VUPD.</li>
@@ -245,12 +246,13 @@ function SeriousPlan({ st }) {
   )
 }
 
-function LadderPlan({ lane, entryStep, st }) {
+function LadderPlan({ lane, entryStep, st, role }) {
   return (
     <>
       <h2 style={s.h2}>{lane.name} — progressive plan</h2>
       <p style={s.body}>{lane.blurb}</p>
       <p style={s.body}>Based on severity, start at <strong>Step {entryStep}</strong>. Steps are a default, not a contract — facts can move the entry point, and ER review is required before final warning or termination.</p>
+      <CoachingNote pathKey="ladder" role={role} />
       <h3 style={s.h3}>Who owns this lane</h3>
       <div style={s.cCol}>{lane.route.map((r) => <RoleCard key={r} rk={r} />)}</div>
       <h3 style={s.h3}>The ladder</h3>
