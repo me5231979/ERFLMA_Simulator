@@ -39,6 +39,14 @@ fieldset {
   padding: 0;
 }
 
+/* Print / Save-as-PDF: keep the header + plan, drop the wizard chrome. */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .avoid-break { break-inside: avoid; }
+  a[href]:after { content: none !important; }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

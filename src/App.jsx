@@ -40,7 +40,7 @@ export default function App() {
           <p style={s.sub}>Process and policy guidance — not legal advice. The system routes risk to the right person, adjusts to your work state, and never clears a separation on its own.</p>
         </header>
 
-        <div style={s.rail}>
+        <div style={s.rail} className="no-print">
           {steps.map((x, i) => {
             const on = order.indexOf(stage) >= i
             return (
@@ -152,7 +152,7 @@ export default function App() {
             <DeltaBox st={st} />
             <div style={s.disc}>Guidance only, current to June 2026. {st?.name} rule of thumb: {st?.finalPay} Confirm the final step with your Engagement Consultant or ER before acting.</div>
             <Resources st={st} />
-            <Nav back={() => setStage('classify')} reset={reset} />
+            <Nav back={() => setStage('classify')} reset={reset} print={() => window.print()} />
           </Card>
         )}
       </div>
@@ -235,7 +235,7 @@ function LadderPlan({ lane, entryStep, st }) {
         {LADDER.map((step) => {
           const active = step.step >= entryStep
           return (
-            <div key={step.step} style={{ ...s.rung, ...(active ? {} : { opacity: 0.42 }) }}>
+            <div key={step.step} className="avoid-break" style={{ ...s.rung, ...(active ? {} : { opacity: 0.42 }) }}>
               <div style={s.rungNum}>{step.step < entryStep ? '—' : step.step}</div>
               <div style={{ flex: 1 }}>
                 <div style={s.rungHead}><span style={s.rungName}>{step.name}</span><span style={s.rungOwner}>{step.owner}</span></div>
@@ -263,7 +263,7 @@ function RoleCard({ rk }) {
   const r = ROLES[rk]
   if (!r) return null
   return (
-    <div style={{ ...s.contact, ...(r.indirect ? { borderLeftColor: '#B8B2A4', background: '#FAF9F5' } : {}) }}>
+    <div className="avoid-break" style={{ ...s.contact, ...(r.indirect ? { borderLeftColor: '#B8B2A4', background: '#FAF9F5' } : {}) }}>
       <div style={s.contactTop}><span style={s.contactName}>{r.name}</span>{r.indirect && <span style={s.badge}>indirect</span>}</div>
       <span style={s.contactDesc}>{r.desc}</span>
       <span style={s.contactWho}>{r.who}</span>
@@ -291,7 +291,7 @@ function Resources({ st }) {
 
 function ResLink({ r }) {
   return (
-    <a href={r.url} target="_blank" rel="noopener noreferrer" style={s.res}>
+    <a href={r.url} target="_blank" rel="noopener noreferrer" className="avoid-break" style={s.res}>
       <div style={s.resTop}><span style={s.resOrg}>{r.org}</span><span style={s.resArrow}>↗</span></div>
       <span style={s.resTitle}>{r.title}</span>
       <span style={s.resNote}>{r.note}</span>
@@ -301,14 +301,17 @@ function ResLink({ r }) {
 
 function Card({ children }) { return <div style={s.card}>{children}</div> }
 
-function Nav({ back, next, reset, nextLbl, nextOff }) {
+function Nav({ back, next, reset, print, nextLbl, nextOff }) {
   return (
-    <div style={s.nav}>
+    <div style={s.nav} className="no-print">
       <div>
         {back && <button style={s.ghost} onClick={back}>← Back</button>}
         {reset && <button style={s.ghost} onClick={reset}>↺ Start over</button>}
       </div>
-      {next && <button style={{ ...s.btn, ...(nextOff ? s.btnOff : {}) }} onClick={next} disabled={nextOff}>{nextLbl} →</button>}
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        {print && <button style={s.pdfBtn} onClick={print}>⤓ Save as PDF</button>}
+        {next && <button style={{ ...s.btn, ...(nextOff ? s.btnOff : {}) }} onClick={next} disabled={nextOff}>{nextLbl} →</button>}
+      </div>
     </div>
   )
 }
@@ -403,6 +406,7 @@ const s = {
   resNote: { fontSize: 12.5, lineHeight: 1.5, color: '#6E685D' },
   nav: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 26, gap: 12, flexWrap: 'wrap' },
   btn: { background: INK, color: PAPER, border: 'none', borderRadius: 3, padding: '11px 20px', fontSize: 14, fontWeight: 600 },
+  pdfBtn: { background: '#fff', color: INK, borderWidth: 1, borderStyle: 'solid', borderColor: INK, borderRadius: 3, padding: '10px 16px', fontSize: 13.5, fontWeight: 600 },
   btnOff: { background: '#D8D3C7', color: '#fff' },
   ghost: { background: 'transparent', border: 'none', color: '#6E685D', fontSize: 13.5, padding: '8px 4px', marginRight: 8 },
 }
