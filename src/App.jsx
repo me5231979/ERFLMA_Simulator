@@ -36,7 +36,7 @@ export default function App() {
           <img src={vanderbiltLogo} alt="Vanderbilt University" style={s.logo} />
           <div style={s.rule} />
           <div style={s.eyebrow}>Futures Learning Hub · Employee Relations</div>
-          <h1 style={s.h1}>Discipline & ER <span style={s.ital}>Simulator</span></h1>
+          <h1 style={s.h1}>ER <span style={s.ital}>Compass</span></h1>
           <p style={s.sub}>Process and policy guidance — not legal advice. The system routes risk to the right person, adjusts to your work state, and never clears a separation on its own.</p>
         </header>
 
