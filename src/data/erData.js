@@ -115,11 +115,99 @@ export const LADDER = [
   { step: 4, name: 'Termination Recommendation', purpose: 'Separation when prior steps did not produce change.', doc: 'Documented history, comparator/consistency check, state final-pay plan, sign-off. Manager does not execute alone.', owner: 'ER + Engagement Consultant' },
 ]
 
+// Severity of the CURRENT issue — a floor for ladder entry. Prior discipline is
+// captured separately (PRIOR_DISCIPLINE) so severity and history don't conflate.
 export const SEVERITY = [
   { id: 'minor', label: 'Minor / first instance', entry: 1 },
-  { id: 'moderate', label: 'Moderate or repeated', entry: 2 },
-  { id: 'serious', label: 'Serious / prior warnings exist', entry: 3 },
+  { id: 'moderate', label: 'Moderate', entry: 2 },
+  { id: 'serious', label: 'Severe (may justify a higher start)', entry: 3 },
 ]
+
+// Active prior discipline already on file for a similar issue. "Active" generally
+// means within the last ~12 months — older warnings usually roll off.
+export const PRIOR_DISCIPLINE = [
+  { id: 'none', label: 'None on file', level: 0 },
+  { id: 'verbal', label: 'Verbal warning', level: 1 },
+  { id: 'written', label: 'Written warning', level: 2 },
+  { id: 'final', label: 'Final warning / PIP', level: 3 },
+]
+
+// Plain-English "why it matters" for each hard stop (micro-learning).
+export const HARD_STOP_WHY = {
+  protected_class: 'If bias is in play, discipline can become evidence of discrimination — a neutral party looks first.',
+  harassment_violence: 'Safety and Title VII/IX duties attach immediately; the institution, not the manager, owns the response.',
+  student_involved: 'Anything touching a student runs through Title IX / EOA — a different process than employee discipline.',
+  disability_accommodation: 'The law may require accommodation, not discipline; the interactive process comes before any action.',
+  leave_interference: 'Protected leave cannot be punished, even indirectly — disciplining around it reads as interference or retaliation.',
+  concerted_activity: 'Discussing pay or conditions is protected, union or not; disciplining it is itself unlawful.',
+  criminal: 'Investigating alone can destroy evidence or expose the institution — this goes to the right authorities.',
+  retaliation: 'Adverse action soon after protected activity is the most common — and most winnable — claim against employers.',
+  offduty: 'Several states protect lawful off-duty conduct; disciplining it can be unlawful on its own.',
+}
+
+// Per-path bright-line "don'ts".
+export const AVOID = {
+  protected: [
+    'Do not decide or hint at an outcome before the review is done.',
+    'Do not ask about a diagnosis, medical details, or immigration status.',
+    "Do not change the person's schedule, pay, or duties as a reaction.",
+    'Do not discuss it with peers or investigate on your own.',
+  ],
+  serious: [
+    'Do not terminate or promise termination on the spot.',
+    'Do not interview witnesses or gather evidence without ER guidance.',
+    'Do not delete or alter records — preserve everything.',
+    'Do not discuss the matter beyond those who need to know.',
+  ],
+  ladder: [
+    'Do not document character or attitude — only observable facts.',
+    'Do not skip steps without ER concurrence.',
+    'Do not count FMLA / ADA-protected absences against the employee.',
+    'Do not spring a written warning without a prior conversation.',
+  ],
+}
+
+// FMLA / ADA questions to resolve before acting (shown when those flags fire).
+export const KEY_QUESTIONS = {
+  leave_interference: {
+    title: 'FMLA / leave — resolve before any action',
+    items: [
+      'Is the employee FMLA-eligible (12 months, 1,250 hours, 50+ employees within 75 miles)?',
+      'Is the leave continuous or intermittent — and is the absence at issue actually protected?',
+      'Have protected absences been carved out of any attendance count?',
+      'Is medical certification outstanding, and has the leave team been looped in?',
+    ],
+  },
+  disability_accommodation: {
+    title: 'ADA / accommodation — resolve before any action',
+    items: [
+      'Has the employee requested an accommodation, in any words?',
+      'Has the interactive process started and been documented?',
+      'Can the essential functions be performed with a reasonable accommodation?',
+      'Is the performance or conduct gap connected to the condition?',
+    ],
+  },
+}
+
+// Blank documentation worksheet. The app collects nothing — these are fields the
+// manager fills in on the printed/PDF copy for their own record.
+export const WORKSHEET = {
+  ladder: {
+    title: 'Documentation worksheet',
+    intro: 'Complete for your records. Stick to specific, observable facts.',
+    fields: ['Date of conversation', 'Employee role / title', 'Specific facts (dates, what was said or done)', 'Policy or standard at issue', 'Expectation going forward', 'Timeline / check-in date', 'Consequence if not corrected', 'Employee response', 'Manager signature & date', 'Employee acknowledgment & date'],
+  },
+  protected: {
+    title: 'Facts log (for hand-off)',
+    intro: 'Record only what you directly observed, then hand off. Leave out identifiers you do not need.',
+    fields: ['Date(s) and time(s)', 'What was observed (objective facts)', 'Who was present', 'What you have done so far', 'Date handed off and to whom'],
+  },
+  serious: {
+    title: 'Facts log (for ER review)',
+    intro: 'Record objective facts immediately and preserve any evidence. Do not investigate alone.',
+    fields: ['Date(s) and time(s)', 'What was observed (objective facts)', 'Who was present', 'Evidence preserved or secured', 'Interim measures taken (e.g., paid leave)', 'Date ER & Engagement Consultant contacted'],
+  },
+}
 
 // Plain-language coaching shown on the plan/report, by plan path and by who is
 // reading (manager vs employee). Each entry has a short paragraph, a few

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { GOLD, INK, PAPER, LINE, STOP, GOLD_GRADIENT } from './theme.js'
-import { ROLES, STATES, RESOURCES, HARD_STOPS, LANES, LADDER, SEVERITY, COACHING } from './data/erData.js'
+import { ROLES, STATES, RESOURCES, HARD_STOPS, HARD_STOP_WHY, LANES, LADDER, SEVERITY, PRIOR_DISCIPLINE, COACHING, AVOID, KEY_QUESTIONS, WORKSHEET } from './data/erData.js'
 import { routedRoles, isLegalHeavy, isDanger, entryStepFor } from './engine.js'
 import vanderbiltLogo from './assets/vanderbilt-horizontal.png'
 
@@ -15,12 +15,13 @@ export default function App() {
   const [triggered, setTriggered] = useState([])
   const [lane, setLane] = useState(null)
   const [severity, setSeverity] = useState(null)
+  const [prior, setPrior] = useState('none')
 
   const st = stateCode ? STATES[stateCode] : null
   const hardStop = triggered.length > 0
-  const entryStep = entryStepFor(severity)
+  const entryStep = entryStepFor(severity, prior)
 
-  const reset = () => { setStage('intro'); setRole(null); setStateCode(null); setTriggered([]); setLane(null); setSeverity(null) }
+  const reset = () => { setStage('intro'); setRole(null); setStateCode(null); setTriggered([]); setLane(null); setSeverity(null); setPrior('none') }
   const toggle = (id) => setTriggered((t) => (t.includes(id) ? t.filter((x) => x !== id) : [...t, id]))
 
   const routed = useMemo(() => routedRoles(triggered), [triggered])
@@ -93,6 +94,7 @@ export default function App() {
               <span style={s.selectHintTxt}>Optional · select all that apply, or none</span>
               {triggered.length > 0 && <span style={s.selectCount}>{triggered.length} selected</span>}
             </div>
+            <p style={s.tip}>Timing check: if the employee complained, took leave, or filed a comp claim in the last ~90 days, check <em>Possible retaliation</em> — the timing alone creates risk.</p>
             <div style={s.stopGrid}>
               {HARD_STOPS.map((h) => {
                 const on = triggered.includes(h.id)
@@ -132,10 +134,17 @@ export default function App() {
             </div>
             {(lane === 'PERFORMANCE' || lane === 'CONDUCT') && (
               <div style={{ marginTop: 22 }}>
-                <h3 style={s.h3}>Where does this enter the ladder?</h3>
+                <h3 style={s.h3}>How severe is the current issue?</h3>
                 <div style={s.sevRow}>
                   {SEVERITY.map((x) => (
                     <button key={x.id} onClick={() => setSeverity(x.id)} style={{ ...s.sev, ...(severity === x.id ? s.sevOn : {}) }}>{x.label}</button>
+                  ))}
+                </div>
+                <h3 style={s.h3}>Active prior discipline on file?</h3>
+                <p style={s.miniNote}>Count only discipline still active — warnings generally roll off after ~12 months.</p>
+                <div style={s.sevRow}>
+                  {PRIOR_DISCIPLINE.map((x) => (
+                    <button key={x.id} onClick={() => setPrior(x.id)} style={{ ...s.sev, ...(prior === x.id ? s.sevOn : {}) }}>{x.label}</button>
                   ))}
                 </div>
               </div>
@@ -151,6 +160,7 @@ export default function App() {
               : <LadderPlan lane={LANES[lane]} entryStep={entryStep} st={st} role={role} />}
             <DeltaBox st={st} />
             <div style={s.disc}>Guidance only, current to June 2026. {st?.name} rule of thumb: {st?.finalPay} Confirm the final step with your Engagement Consultant or ER before acting.</div>
+            <Worksheet pathKey={lane === 'PROTECTED' ? 'protected' : lane === 'SERIOUS' ? 'serious' : 'ladder'} />
             <Resources st={st} />
             <Nav back={() => setStage('classify')} reset={reset} print={() => window.print()} />
           </Card>
@@ -182,6 +192,51 @@ function CoachingNote({ pathKey, role }) {
   )
 }
 
+function AvoidList({ pathKey }) {
+  const items = AVOID[pathKey]
+  if (!items) return null
+  return (
+    <div className="avoid-break">
+      <h3 style={{ ...s.h3, color: STOP }}>Avoid</h3>
+      <ul style={s.ul}>{items.map((t, i) => <li key={i} style={s.li}>{t}</li>)}</ul>
+    </div>
+  )
+}
+
+function KeyQuestions({ triggered }) {
+  const blocks = ['leave_interference', 'disability_accommodation'].filter((id) => triggered.includes(id)).map((id) => KEY_QUESTIONS[id])
+  if (blocks.length === 0) return null
+  return (
+    <>
+      {blocks.map((b, i) => (
+        <div key={i} className="avoid-break" style={s.keyBox}>
+          <div style={s.keyTitle}>{b.title}</div>
+          <ul style={s.ul}>{b.items.map((q, j) => <li key={j} style={s.li}>{q}</li>)}</ul>
+        </div>
+      ))}
+    </>
+  )
+}
+
+function Worksheet({ pathKey }) {
+  const w = WORKSHEET[pathKey]
+  if (!w) return null
+  return (
+    <div className="avoid-break" style={s.sheet}>
+      <h3 style={s.h3}>{w.title}</h3>
+      <p style={s.resIntro}>{w.intro}</p>
+      <div style={s.sheetGrid}>
+        {w.fields.map((f, i) => (
+          <div key={i} style={s.sheetRow}>
+            <span style={s.sheetLbl}>{f}</span>
+            <span style={s.sheetLine} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function DeltaBox({ st }) {
   if (!st) return null
   return (
@@ -204,7 +259,7 @@ function ProtectedPlan({ triggered, routedRoles: routed, role }) {
       <p style={s.body}>One or more hard stops fired. Do not issue discipline, promise an outcome, or investigate alone. {role === 'manager' ? 'Your job now is to document facts and hand off.' : 'You have the right to report and to be supported — here is where to go.'}</p>
       <CoachingNote pathKey="protected" role={role} />
       <h3 style={s.h3}>Why this routed</h3>
-      <ul style={s.ul}>{triggered.map((tid) => { const h = HARD_STOPS.find((x) => x.id === tid); return <li key={tid} style={s.li}><strong>{h.label}.</strong> {h.law}</li> })}</ul>
+      <ul style={s.ul}>{triggered.map((tid) => { const h = HARD_STOPS.find((x) => x.id === tid); return <li key={tid} style={s.li}><strong>{h.label}.</strong> {HARD_STOP_WHY[tid]} <span style={s.lawMuted}>{h.law}</span></li> })}</ul>
       <h3 style={s.h3}>Route to — in this order</h3>
       <div style={s.cCol}>
         {routed.map((r) => <RoleCard key={r} rk={r} />)}
@@ -219,6 +274,8 @@ function ProtectedPlan({ triggered, routedRoles: routed, role }) {
         {accommodation && <li style={s.li}>Start the ADA/FMLA interactive process — engage the request, don't deny or discipline around it.</li>}
         {danger && <li style={s.li}>If anyone is in danger or a crime may be in progress, call VUPD first.</li>}
       </ol>
+      <KeyQuestions triggered={triggered} />
+      <AvoidList pathKey="protected" />
     </>
   )
 }
@@ -242,6 +299,7 @@ function SeriousPlan({ st, role }) {
       <h3 style={s.h3}>Who's involved</h3>
       <div style={s.cCol}><RoleCard rk="EC" /><RoleCard rk="ER" /><RoleCard rk="VUPD" /><RoleCard rk="OGC" /></div>
       <div style={s.alert}><strong style={{ color: STOP }}>Re-screen.</strong> If the conduct involves a protected class, a complaint, leave, a disability, or a student, go back — it's no longer a clean misconduct case.</div>
+      <AvoidList pathKey="serious" />
     </>
   )
 }
@@ -251,7 +309,7 @@ function LadderPlan({ lane, entryStep, st, role }) {
     <>
       <h2 style={s.h2}>{lane.name} — progressive plan</h2>
       <p style={s.body}>{lane.blurb}</p>
-      <p style={s.body}>Based on severity, start at <strong>Step {entryStep}</strong>. Steps are a default, not a contract — facts can move the entry point, and ER review is required before final warning or termination.</p>
+      <p style={s.body}>Start at <strong>Step {entryStep}</strong>{entryStep > 1 ? ' — and because that is above Step 1, confirm ER concurrence before you issue anything' : ''}. Steps are a default, not a contract: facts can move the entry point, and ER review is required before any final warning or termination.</p>
       <CoachingNote pathKey="ladder" role={role} />
       <h3 style={s.h3}>Who owns this lane</h3>
       <div style={s.cCol}>{lane.route.map((r) => <RoleCard key={r} rk={r} />)}</div>
@@ -280,6 +338,7 @@ function LadderPlan({ lane, entryStep, st, role }) {
         <li style={s.li}>Re-run the legal screen — a protected signal moves this off the ladder.</li>
         <li style={s.li}>Loop your Engagement Consultant before written steps.</li>
       </ul>
+      <AvoidList pathKey="ladder" />
     </>
   )
 }
@@ -413,6 +472,16 @@ const s = {
   badge: { fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#8A8478', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderRadius: 3, padding: '1px 6px', fontWeight: 700 },
   contactDesc: { fontSize: 12.5, lineHeight: 1.5, color: '#6E685D' },
   contactWho: { fontSize: 12.5, fontWeight: 600, color: '#403C34' },
+  tip: { fontSize: 12.5, lineHeight: 1.55, color: '#6E685D', fontStyle: 'italic', margin: '10px 0 0' },
+  miniNote: { fontSize: 12, lineHeight: 1.5, color: '#8A8478', margin: '0 0 8px' },
+  lawMuted: { color: '#8A8478' },
+  keyBox: { marginTop: 18, padding: '14px 16px', background: '#FCF6F5', borderWidth: 1, borderStyle: 'solid', borderColor: STOP, borderRadius: 4 },
+  keyTitle: { fontSize: 13, fontWeight: 700, color: STOP, marginBottom: 8 },
+  sheet: { marginTop: 24, paddingTop: 16, borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: LINE },
+  sheetGrid: { display: 'grid', gap: 16, marginTop: 12 },
+  sheetRow: { display: 'grid', gap: 6 },
+  sheetLbl: { fontSize: 12.5, fontWeight: 600, color: '#403C34' },
+  sheetLine: { height: 1, borderBottomWidth: 1, borderBottomStyle: 'dashed', borderBottomColor: '#C9C3B6', marginTop: 6 },
   coach: { marginTop: 24, padding: '16px 18px', background: '#FAF6EC', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderLeftWidth: 3, borderLeftStyle: 'solid', borderLeftColor: GOLD, borderRadius: 4 },
   coachLbl: { fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 8 },
   coachTxt: { fontSize: 14, lineHeight: 1.7, color: '#403C34', margin: 0 },

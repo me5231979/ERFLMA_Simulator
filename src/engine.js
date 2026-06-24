@@ -7,7 +7,7 @@
 //   4. California surfaces immediate-final-pay warnings on any termination path.
 //   5. The tool never authorizes a termination; it describes process + ownership.
 
-import { HARD_STOPS, SEVERITY, ROLES } from './data/erData.js'
+import { HARD_STOPS, SEVERITY, PRIOR_DISCIPLINE, ROLES } from './data/erData.js'
 
 // Triggers that pull in OGC (legally heavy) — counsel is brought in via ER/EOA.
 const LEGAL_HEAVY = ['protected_class', 'harassment_violence', 'criminal', 'retaliation']
@@ -43,10 +43,17 @@ export function protectedRouting(triggeredIds = [], role = 'manager') {
   return list
 }
 
-// Ladder entry step from severity (default Step 1).
-export function entryStepFor(severityId) {
-  return SEVERITY.find((s) => s.id === severityId)?.entry ?? 1
+// Ladder entry step. Driven by BOTH the current issue's severity (a floor) and
+// any ACTIVE prior discipline (advance one rung past the last documented step).
+// Capped before Termination, which always needs explicit ER sign-off.
+export function entryStepFor(severityId, priorId = 'none') {
+  const floor = SEVERITY.find((s) => s.id === severityId)?.entry ?? 1
+  const prior = PRIOR_DISCIPLINE.find((p) => p.id === priorId)?.level ?? 0
+  return Math.min(Math.max(floor, prior + 1), 4)
 }
+
+// Entering above Step 1 should not happen on a manager's say-so alone.
+export const requiresErConcurrence = (entryStep) => entryStep > 1
 
 // GUARDRAIL 1: classification is gated behind the legal screen.
 // Returns which plan a given screen+lane resolves to.

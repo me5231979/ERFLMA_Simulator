@@ -53,11 +53,13 @@ test('routedRoles is ordered and de-duplicated across multiple triggers', () => 
   assert.deepEqual(routes, ['EOA', 'EC', 'ER'])
 })
 
-test('GUARDRAIL 4: California is flagged urgent so termination paths warn on final pay', () => {
-  // entryStep maps severity correctly; ladder step 4 + CA urgent drives the warning in the UI.
-  assert.equal(entryStepFor('minor'), 1)
-  assert.equal(entryStepFor('serious'), 3)
-  assert.equal(entryStepFor(undefined), 1)
+test('ladder entry: severity is a floor, active prior discipline advances one rung', () => {
+  assert.equal(entryStepFor('minor'), 1) // no prior, minor
+  assert.equal(entryStepFor('serious'), 3) // severe floor
+  assert.equal(entryStepFor(undefined), 1) // safe default
+  assert.equal(entryStepFor('minor', 'written'), 3) // past a written warning -> final
+  assert.equal(entryStepFor('moderate', 'none'), 2) // severity floor wins
+  assert.equal(entryStepFor('minor', 'final'), 4) // capped at termination recommendation
 })
 
 test('employee role adds EAP support to the protected routing', () => {
