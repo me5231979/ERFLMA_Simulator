@@ -36,9 +36,12 @@ export default function App() {
         <header style={{ marginBottom: 26 }}>
           <img src={vanderbiltLogo} alt="Vanderbilt University" style={s.logo} />
           <div style={s.rule} />
-          <div style={s.eyebrow}>Futures Learning Hub · Employee Relations</div>
-          <h1 style={s.h1}>ER <span style={s.ital}>Compass</span></h1>
-          <p style={s.sub}>Process and policy guidance — not legal advice. The system routes risk to the right person, adjusts to your work state, and never clears a separation on its own.</p>
+          <div style={s.titleRow}>
+            <CompassMark />
+            <h1 style={{ ...s.h1, margin: 0 }}>Compass</h1>
+          </div>
+          <p style={s.sub}>Your guide to managing progressive discipline, ER, and FMLA.</p>
+          <p style={s.subSmall}>Decision support, not legal advice — it routes risk to the right person and never clears a separation on its own.</p>
         </header>
 
         <div style={s.rail} className="no-print">
@@ -167,6 +170,28 @@ export default function App() {
         )}
       </div>
     </div>
+  )
+}
+
+// Compass-rose logo mark — gold cardinal star over an ink intercardinal star,
+// inside a ring. Inline SVG so it stays crisp and prints cleanly.
+function CompassMark({ size = 46 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Compass" style={{ flexShrink: 0 }}>
+      <defs>
+        <linearGradient id="compassGold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#FEEEB6" />
+          <stop offset="0.5" stopColor="#CFAE70" />
+          <stop offset="1" stopColor="#B49248" />
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="46" fill="none" stroke={INK} strokeWidth="3" />
+      <circle cx="50" cy="50" r="40" fill="none" stroke="url(#compassGold)" strokeWidth="1.5" />
+      <path d="M50 16 L56 44 L84 50 L56 56 L50 84 L44 56 L16 50 L44 44 Z" transform="rotate(45 50 50)" fill={INK} opacity="0.85" />
+      <path d="M50 8 L57 43 L92 50 L57 57 L50 92 L43 57 L8 50 L43 43 Z" fill="url(#compassGold)" stroke="#B49248" strokeWidth="1" />
+      <circle cx="50" cy="50" r="5" fill={INK} />
+      <circle cx="50" cy="50" r="2" fill="url(#compassGold)" />
+    </svg>
   )
 }
 
@@ -408,7 +433,9 @@ const s = {
   eyebrow: { fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 12 },
   h1: { fontFamily: 'Georgia,serif', fontSize: 38, lineHeight: 1.05, margin: '0 0 14px', fontWeight: 400 },
   ital: { fontStyle: 'italic', color: GOLD },
-  sub: { fontSize: 15, lineHeight: 1.6, color: '#4A463E', maxWidth: 580, margin: 0 },
+  titleRow: { display: 'flex', alignItems: 'center', gap: 14, margin: '0 0 12px' },
+  sub: { fontSize: 16, lineHeight: 1.6, color: '#403C34', maxWidth: 600, margin: 0, fontWeight: 600 },
+  subSmall: { fontSize: 13, lineHeight: 1.55, color: '#8A8478', maxWidth: 600, margin: '6px 0 0' },
   rail: { display: 'flex', gap: 6, margin: '0 0 24px', borderTop: `1px solid ${LINE}`, borderBottom: `1px solid ${LINE}`, padding: '14px 0', flexWrap: 'wrap' },
   railItem: { display: 'flex', alignItems: 'center', gap: 7, flex: 1, minWidth: 96 },
   dot: { width: 22, height: 22, borderRadius: '50%', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, display: 'grid', placeItems: 'center', fontSize: 11, fontWeight: 700, color: '#9A9486', flexShrink: 0 },
