@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { GOLD, INK, PAPER, LINE, STOP, GOLD_GRADIENT } from './theme.js'
 import { ROLES, STATES, RESOURCES, HARD_STOPS, LANES, LADDER, SEVERITY } from './data/erData.js'
 import { routedRoles, isLegalHeavy, isDanger, entryStepFor } from './engine.js'
+import vanderbiltLogo from './assets/vanderbilt-horizontal.png'
 
 // FLH (Futures Learning Hub) Employee Relations & Progressive Discipline
 // Simulator. Decision support, not legal advice. Verified state deltas, June 2026.
@@ -32,6 +33,8 @@ export default function App() {
       <style>{`*{box-sizing:border-box}button{font-family:inherit;cursor:pointer;transition:all .15s}button:disabled{cursor:not-allowed}button:focus-visible,a:focus-visible{outline:2px solid ${GOLD};outline-offset:2px}a:hover{border-color:${GOLD}!important;background:#FAF6EC!important}@media(max-width:640px){.frm{padding:24px 16px 64px!important}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}`}</style>
       <div style={s.frame} className="frm">
         <header style={{ marginBottom: 26 }}>
+          <img src={vanderbiltLogo} alt="Vanderbilt University" style={s.logo} />
+          <div style={s.rule} />
           <div style={s.eyebrow}>Futures Learning Hub · Employee Relations</div>
           <h1 style={s.h1}>Discipline & ER <span style={s.ital}>Simulator</span></h1>
           <p style={s.sub}>Process and policy guidance — not legal advice. The system routes risk to the right person, adjusts to your work state, and never clears a separation on its own.</p>
