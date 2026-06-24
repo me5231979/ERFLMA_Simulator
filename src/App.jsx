@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { GOLD, INK, PAPER, LINE, STOP, GOLD_GRADIENT } from './theme.js'
-import { ROLES, STATES, RESOURCES, HARD_STOPS, LANES, LADDER, SEVERITY } from './data/erData.js'
+import { ROLES, STATES, RESOURCES, HARD_STOPS, LANES, LADDER, SEVERITY, COACHING } from './data/erData.js'
 import { routedRoles, isLegalHeavy, isDanger, entryStepFor } from './engine.js'
 import vanderbiltLogo from './assets/vanderbilt-horizontal.png'
 
@@ -149,6 +149,7 @@ export default function App() {
             {lane === 'PROTECTED' ? <ProtectedPlan triggered={triggered} routedRoles={routed} role={role} />
               : lane === 'SERIOUS' ? <SeriousPlan st={st} />
               : <LadderPlan lane={LANES[lane]} entryStep={entryStep} st={st} />}
+            <CoachingNote pathKey={lane === 'PROTECTED' ? 'protected' : lane === 'SERIOUS' ? 'serious' : 'ladder'} role={role} />
             <DeltaBox st={st} />
             <div style={s.disc}>Guidance only, current to June 2026. {st?.name} rule of thumb: {st?.finalPay} Confirm the final step with your Engagement Consultant or ER before acting.</div>
             <Resources st={st} />
@@ -156,6 +157,17 @@ export default function App() {
           </Card>
         )}
       </div>
+    </div>
+  )
+}
+
+function CoachingNote({ pathKey, role }) {
+  const text = COACHING[pathKey]?.[role === 'employee' ? 'employee' : 'manager']
+  if (!text) return null
+  return (
+    <div className="avoid-break" style={s.coach}>
+      <div style={s.coachLbl}>Coaching note · in plain terms</div>
+      <p style={s.coachTxt}>{text}</p>
     </div>
   )
 }
@@ -388,6 +400,9 @@ const s = {
   badge: { fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#8A8478', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderRadius: 3, padding: '1px 6px', fontWeight: 700 },
   contactDesc: { fontSize: 12.5, lineHeight: 1.5, color: '#6E685D' },
   contactWho: { fontSize: 12.5, fontWeight: 600, color: '#403C34' },
+  coach: { marginTop: 24, padding: '16px 18px', background: '#FAF6EC', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderLeftWidth: 3, borderLeftStyle: 'solid', borderLeftColor: GOLD, borderRadius: 4 },
+  coachLbl: { fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 8 },
+  coachTxt: { fontSize: 14, lineHeight: 1.7, color: '#403C34', margin: 0 },
   delta: { marginTop: 26, borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderRadius: 4, overflow: 'hidden' },
   deltaHead: { display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: '#FAF6EC', borderBottom: `1px solid ${LINE}` },
   deltaCode: { fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 700, color: GOLD },

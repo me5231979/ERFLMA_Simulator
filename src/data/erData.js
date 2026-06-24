@@ -120,3 +120,27 @@ export const SEVERITY = [
   { id: 'moderate', label: 'Moderate or repeated', entry: 2 },
   { id: 'serious', label: 'Serious / prior warnings exist', entry: 3 },
 ]
+
+// Plain-language coaching paragraph shown on the plan/report, by plan path and
+// by who is reading (manager vs employee). Edit freely — this is guidance copy,
+// not legal text.
+export const COACHING = {
+  protected: {
+    manager:
+      'Take a breath before you do anything else. A protected-status signal came up, so the fair and safe move is to pause discipline and bring in the right partner — you are not in trouble for flagging this; escalating early is exactly what a good manager does. Stick to documenting what you actually observed in neutral, factual language, keep the person’s schedule and duties unchanged while it’s open, and let EOA or ER steer the next step. Do not promise an outcome or investigate on your own.',
+    employee:
+      'You do not have to navigate this alone. What you have described may involve protected rights, and you have the right to report it and to be free from retaliation for doing so. Write down what happened — dates, what was said, who was there — reach out to the first contact listed, and remember the Employee Assistance Program is there for confidential support. Nothing is decided here; this is about getting you to the people who can help.',
+  },
+  serious: {
+    manager:
+      'Serious does not mean rushed. Make sure everyone is safe first, then deliberately slow the decision down: write down the facts while they are fresh, consider paid administrative leave rather than acting in the moment, and loop in your Engagement Consultant and ER before any outcome. Ask yourself how comparable situations were handled so the response stays consistent. You gather and document; ER co-owns the decision — acting alone is the biggest risk.',
+    employee:
+      'This is a serious situation, and it is reasonable to feel unsettled. Focus on what you can control: write down the facts as you remember them, cooperate with the people reviewing it, and use the Employee Assistance Program for support. You are entitled to a fair, consistent process, and decisions here are shared — not made on the spot by one person.',
+  },
+  ladder: {
+    manager:
+      'The point of progressive discipline is to help the person succeed, not to build a case against them. Be specific and humane: name the exact gap, the standard you expect, and a realistic timeline to improve, and put it in writing so there are no surprises. Lead with a real conversation, document observable facts rather than impressions, and stay consistent with how you have handled similar situations. Most issues turn around when expectations are made clear early — and your Engagement Consultant is there before any written step.',
+    employee:
+      'This is meant to be a clear, fair path to get back on track — not a trap. You should expect specific feedback about what needs to change, a reasonable chance and timeline to improve, and consistency with how others are treated. Ask questions, take notes, and use the support that is offered, including your Engagement Consultant. If anything about the process feels retaliatory or unfair, you can raise it.',
+  },
+}
