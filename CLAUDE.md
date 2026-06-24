@@ -18,51 +18,56 @@ browser — nothing the user types is sent anywhere.
 
 ## Guardrails (do not regress)
 
-These are enforced in `src/engine.js` and covered by `src/engine.test.js`. If
-you change the engine, keep these true and keep the tests green.
+The pure logic lives in `src/engine.js` and is covered by `src/engine.test.js`.
+The full UI/behavior spec is `ER_Simulator_UIUX_PRD.md` (PRD §6). Keep these true
+and keep the tests green.
 
-1. **The legal screen runs before classification.** `buildPlan()` calls
-   `screenForHardStops()` first. If any hard stop is triggered, the plan has
-   `status: 'hard-stop'`, `classification` is `null`, and the user is routed for
-   review — the tool does **not** suggest discipline.
-2. **OGC / employment counsel never renders as a direct contact.** Counsel has
-   `directContact: false` in `src/data/roles.js`. The engine pairs it with a
-   direct-contact human, and `Contacts.jsx` renders it without contact details.
-   Never print OGC contact info directly.
-3. **Every plan ends with a route-to-a-human step.** The last item in
-   `plan.steps` is always `kind: 'route'` and always includes a direct-contact
-   human (HRBP/ER).
+1. **The legal screen runs before classification.** The flow is
+   Role → State → **Screen** → Classify → Plan. `planPathFor()` returns
+   `'protected'` whenever any hard stop is checked — the discipline ladder is
+   unreachable while a hard stop is active.
+2. **OGC never renders as a direct contact.** `ROLES.OGC.indirect === true`
+   (in `src/data/erData.js`); it renders as an "indirect" card reading
+   "Brought in by ER/EOA — not contacted directly". `isDirectContact('OGC')`
+   is `false`. Never print OGC contact info directly.
+3. **Every plan routes to a direct-contact human.** `protectedRouting()` always
+   includes at least one direct human, and every plan ends with the
+   "confirm with your Engagement Consultant or ER" disclaimer.
+4. **California surfaces immediate-final-pay warnings** on every termination
+   path (ladder step 4, serious-misconduct sequence, and the state delta box).
+   `STATES.CA.urgent === true` drives this.
+5. **The tool never authorizes a termination** or states a legal conclusion — it
+   describes process and ownership only.
 
 ## Project layout
 
 ```
 index.html
 vite.config.js
+ER_Simulator_UIUX_PRD.md  # the canonical UI/UX spec — match it to the pixel
 src/
   main.jsx            # React entry
-  App.jsx             # page + state, calls buildPlan()
+  App.jsx             # the 5-stage flow (Role→State→Screen→Classify→Plan) + UI
   engine.js           # GUARDRAILS LIVE HERE (UI-free, unit-tested)
   engine.test.js      # guardrail tests (npm test, node:test)
-  theme.js            # look & feel
+  theme.js            # brand tokens (GOLD/INK/PAPER/LINE/STOP)
   styles.css          # base CSS
-  components/
-    Intake.jsx        # the form (legal screen presented first)
-    Plan.jsx          # renders the ordered plan + resources
-    Contacts.jsx      # routing UI (enforces "OGC not direct")
+  assets/
+    vanderbilt-horizontal.png  # header logo (gold V + wordmark)
+    vanderbilt-centered.png    # stacked logo variant
   data/
-    states.js         # state legal language + timing (TN default)
-    classification.js # hard stops, lanes, ladder
-    roles.js          # who to route to (fill in real `who` details)
-    resources.js      # resource links
+    erData.js         # ROLES, STATES, RESOURCES, HARD_STOPS, LANES, LADDER, SEVERITY
 ```
 
 ## Editing content (no component changes needed)
 
-- Legal / state language → `src/data/states.js`
-- Hard stops, lanes, ladder → `src/data/classification.js`
-- Who to route to → `src/data/roles.js` (fill in real names/links in `who`)
-- Resource links → `src/data/resources.js`
-- Look and feel → `src/theme.js`
+All content lives in `src/data/erData.js`:
+- State legal language / deltas / final-pay → `STATES`
+- Hard stops (the legal screen) → `HARD_STOPS`
+- Lanes & the discipline ladder → `LANES`, `LADDER`, `SEVERITY`
+- Who to route to → `ROLES` (OGC must keep `indirect: true`)
+- Resource links → `RESOURCES`
+- Brand colors → `src/theme.js`
 
 ## Commands
 
