@@ -121,26 +121,87 @@ export const SEVERITY = [
   { id: 'serious', label: 'Serious / prior warnings exist', entry: 3 },
 ]
 
-// Plain-language coaching paragraph shown on the plan/report, by plan path and
-// by who is reading (manager vs employee). Edit freely — this is guidance copy,
-// not legal text.
+// Plain-language coaching shown on the plan/report, by plan path and by who is
+// reading (manager vs employee). Each entry has a short paragraph, a few
+// concrete "Try this" suggestions, and a sample opening line. Edit freely —
+// this is guidance copy, not legal text.
 export const COACHING = {
   protected: {
-    manager:
-      'Take a breath before you do anything else. A protected-status signal came up, so the fair and safe move is to pause discipline and bring in the right partner — you are not in trouble for flagging this; escalating early is exactly what a good manager does. Stick to documenting what you actually observed in neutral, factual language, keep the person’s schedule and duties unchanged while it’s open, and let EOA or ER steer the next step. Do not promise an outcome or investigate on your own.',
-    employee:
-      'You do not have to navigate this alone. What you have described may involve protected rights, and you have the right to report it and to be free from retaliation for doing so. Write down what happened — dates, what was said, who was there — reach out to the first contact listed, and remember the Employee Assistance Program is there for confidential support. Nothing is decided here; this is about getting you to the people who can help.',
+    manager: {
+      paragraph:
+        'Take a breath before you do anything else. A protected-status signal came up, so the fair and safe move is to pause discipline and bring in the right partner — you are not in trouble for flagging this; escalating early is exactly what a good manager does. Your job right now is to document neutrally and hand off.',
+      tips: [
+        'Pause any disciplinary action — do not decide or hint at an outcome right now.',
+        'Write down only what you directly observed, in neutral, factual language.',
+        "Keep the person's schedule, duties, and access unchanged while it is open.",
+        'Hand off to EOA / ER today and let them run any investigation.',
+        'Do not discuss it with other staff or promise the employee a result.',
+      ],
+      sayThis: 'Thank you for raising this. I want to make sure the right team looks at it, and nothing about your role changes in the meantime.',
+    },
+    employee: {
+      paragraph:
+        'You do not have to navigate this alone. What you have described may involve protected rights, and you have the right to report it and to be free from retaliation for doing so. Nothing is decided here — this is about getting you to the people who can help.',
+      tips: [
+        'Write down what happened — dates, what was said, and who was present.',
+        'Report to the contact listed; doing so is protected from retaliation.',
+        'Keep copies of any relevant emails or messages.',
+        'Reach out to the Employee Assistance Program for confidential support.',
+        'You can bring questions to your Engagement Consultant at any time.',
+      ],
+      sayThis: 'I would like to report something and understand my options and my protections.',
+    },
   },
   serious: {
-    manager:
-      'Serious does not mean rushed. Make sure everyone is safe first, then deliberately slow the decision down: write down the facts while they are fresh, consider paid administrative leave rather than acting in the moment, and loop in your Engagement Consultant and ER before any outcome. Ask yourself how comparable situations were handled so the response stays consistent. You gather and document; ER co-owns the decision — acting alone is the biggest risk.',
-    employee:
-      'This is a serious situation, and it is reasonable to feel unsettled. Focus on what you can control: write down the facts as you remember them, cooperate with the people reviewing it, and use the Employee Assistance Program for support. You are entitled to a fair, consistent process, and decisions here are shared — not made on the spot by one person.',
+    manager: {
+      paragraph:
+        'Serious does not mean rushed. Make sure everyone is safe first, then deliberately slow the decision down. You gather and document; ER co-owns the decision — acting alone is the biggest risk.',
+      tips: [
+        'If anyone is unsafe, call VUPD before anything else.',
+        'Consider paid administrative leave pending review rather than acting on the spot.',
+        'Document the facts immediately, while details are fresh.',
+        'Contact your Engagement Consultant and ER before deciding anything.',
+        'Check how comparable cases were handled so the response stays consistent.',
+      ],
+      sayThis: 'We are going to pause things while we look into this carefully. You will be on paid leave for now, and we will be in touch with next steps.',
+    },
+    employee: {
+      paragraph:
+        'This is a serious situation, and it is reasonable to feel unsettled. Focus on what you can control. You are entitled to a fair, consistent process, and decisions here are shared — not made on the spot by one person.',
+      tips: [
+        'Write down the facts as you remember them, as soon as you can.',
+        'Cooperate with the review and ask who is involved and what to expect.',
+        'Keep copies of anything relevant.',
+        'Use the Employee Assistance Program for support.',
+        'Ask questions of your Engagement Consultant if anything is unclear.',
+      ],
+      sayThis: 'Can you help me understand the process from here and who I can talk to?',
+    },
   },
   ladder: {
-    manager:
-      'The point of progressive discipline is to help the person succeed, not to build a case against them. Be specific and humane: name the exact gap, the standard you expect, and a realistic timeline to improve, and put it in writing so there are no surprises. Lead with a real conversation, document observable facts rather than impressions, and stay consistent with how you have handled similar situations. Most issues turn around when expectations are made clear early — and your Engagement Consultant is there before any written step.',
-    employee:
-      'This is meant to be a clear, fair path to get back on track — not a trap. You should expect specific feedback about what needs to change, a reasonable chance and timeline to improve, and consistency with how others are treated. Ask questions, take notes, and use the support that is offered, including your Engagement Consultant. If anything about the process feels retaliatory or unfair, you can raise it.',
+    manager: {
+      paragraph:
+        'The point of progressive discipline is to help the person succeed, not to build a case against them. Be specific and humane, and most issues turn around when expectations are made clear early — your Engagement Consultant is there before any written step.',
+      tips: [
+        'Lead with the specific gap and why it matters — observable facts, not character.',
+        'Name the standard you expect and a realistic, dated timeline to get there.',
+        'Ask for their side first — there may be barriers (workload, training, a personal issue) you can solve.',
+        'Put the conversation in writing the same day so there are no surprises later.',
+        'Close by naming the support available and when you will check in next.',
+      ],
+      sayThis: 'I want to talk through the deadlines we have missed, understand what is getting in the way, and agree on a plan to get you back on track.',
+    },
+    employee: {
+      paragraph:
+        'This is meant to be a clear, fair path to get back on track — not a trap. You should expect specific feedback, a reasonable chance to improve, and consistency with how others are treated.',
+      tips: [
+        'Ask exactly what needs to change and how success will be measured.',
+        'Get the timeline and check-in dates in writing so expectations are clear.',
+        'Share any barriers — workload, training gaps, health, or personal circumstances.',
+        'Take notes during the conversation and keep your own copy.',
+        'Ask what support is available, and loop in your Engagement Consultant with questions.',
+      ],
+      sayThis: 'Can we be specific about what “on track” looks like, and what support is available to help me get there?',
+    },
   },
 }

@@ -162,12 +162,23 @@ export default function App() {
 }
 
 function CoachingNote({ pathKey, role }) {
-  const text = COACHING[pathKey]?.[role === 'employee' ? 'employee' : 'manager']
-  if (!text) return null
+  const c = COACHING[pathKey]?.[role === 'employee' ? 'employee' : 'manager']
+  if (!c) return null
   return (
     <div className="avoid-break" style={s.coach}>
       <div style={s.coachLbl}>Coaching note · in plain terms</div>
-      <p style={s.coachTxt}>{text}</p>
+      <p style={s.coachTxt}>{c.paragraph}</p>
+      {c.tips?.length > 0 && (
+        <>
+          <div style={s.coachTry}>Try this</div>
+          <ul style={s.coachList}>
+            {c.tips.map((t, i) => <li key={i} style={s.coachItem}>{t}</li>)}
+          </ul>
+        </>
+      )}
+      {c.sayThis && (
+        <p style={s.coachSay}><span style={s.coachSayLbl}>You might say:</span> “{c.sayThis}”</p>
+      )}
     </div>
   )
 }
@@ -403,6 +414,11 @@ const s = {
   coach: { marginTop: 24, padding: '16px 18px', background: '#FAF6EC', borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderLeftWidth: 3, borderLeftStyle: 'solid', borderLeftColor: GOLD, borderRadius: 4 },
   coachLbl: { fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: GOLD, fontWeight: 700, marginBottom: 8 },
   coachTxt: { fontSize: 14, lineHeight: 1.7, color: '#403C34', margin: 0 },
+  coachTry: { fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#403C34', fontWeight: 700, margin: '14px 0 6px' },
+  coachList: { margin: '0 0 4px', paddingLeft: 20 },
+  coachItem: { fontSize: 13.5, lineHeight: 1.6, color: '#403C34', marginBottom: 5 },
+  coachSay: { marginTop: 12, paddingLeft: 12, borderLeftWidth: 2, borderLeftStyle: 'solid', borderLeftColor: GOLD, fontSize: 13.5, lineHeight: 1.6, color: '#4A463E', fontStyle: 'italic' },
+  coachSayLbl: { fontStyle: 'normal', fontWeight: 700, color: '#403C34', marginRight: 4 },
   delta: { marginTop: 26, borderWidth: 1, borderStyle: 'solid', borderColor: LINE, borderRadius: 4, overflow: 'hidden' },
   deltaHead: { display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: '#FAF6EC', borderBottom: `1px solid ${LINE}` },
   deltaCode: { fontFamily: 'Georgia,serif', fontSize: 18, fontWeight: 700, color: GOLD },
